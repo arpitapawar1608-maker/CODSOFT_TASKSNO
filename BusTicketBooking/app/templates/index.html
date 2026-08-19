@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}
+BusGo | Travel Smarter
+{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <!-- =====================================================
+         HERO SECTION
+    ====================================================== -->
+
+    <section class="home-hero">
+
+        <div class="home-hero-container">
+
+            <div class="home-hero-content">
+
+                <div class="home-eyebrow">
+                    BUSGO · SIMPLE BUS TRAVEL
+                </div>
+
+                <h1>
+                    Travel with
+                    <span>confidence.</span>
+                    <br>
+                    Book with <span>ease.</span>
+                </h1>
+
+                <p>
+                    Find reliable buses, choose your preferred seat,
+                    and manage your bookings — all in one place.
+                </p>
+
+                <div class="home-hero-buttons">
+
+                    <a href="/search" class="home-primary-button">
+                        Search Buses
+                        <span>→</span>
+                    </a>
+
+                    <a href="/register" class="home-secondary-button">
+                        Create Account
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- HERO VISUAL -->
+
+            <div class="about-image">
+    <img src="/static/images/bus-travel.jpeg" alt="BusGo Bus Travel">
+</div>
+
+        </div>
+
+</section>
+
+
+
+    <!-- =====================================================
+         ABOUT BUSGO
+    ====================================================== -->
+
+    <section class="home-about">
+
+        <div class="home-about-container">
+
+            <div class="home-about-heading">
+
+                <div class="home-section-label">
+                    ABOUT BUSGO
+                </div>
+
+                <h2>
+                    A simpler way to
+                    <span>travel by bus.</span>
+                </h2>
+
+                <p>
+                    BusGo is a convenient bus reservation platform
+                    designed to make your journey easier — from
+                    searching for a bus to managing your booking.
+                </p>
+
+            </div>
+
+
+            <!-- FEATURE CARDS -->
+
+            <div class="home-feature-grid">
+
+                <!-- 01 -->
+
+                <div class="home-feature-card card-blue">
+
+                    <div class="home-feature-top">
+
+                        <div class="home-feature-icon">
+                            🚌
+                        </div>
+
+                        <div class="home-feature-number">
+                            01
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Find Your Bus
+                    </h3>
+
+                    <p>
+                        Explore available buses and routes easily.
+                    </p>
+
+                    <a href="/search">
+                        Explore buses
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+
+                <!-- 02 -->
+
+                <div class="home-feature-card card-purple">
+
+                    <div class="home-feature-top">
+
+                        <div class="home-feature-icon">
+                            🎫
+                        </div>
+
+                        <div class="home-feature-number">
+                            02
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Book Your Seat
+                    </h3>
+
+                    <p>
+                        Select your preferred seat and reserve it securely.
+                    </p>
+
+                    <a href="/search">
+                        Book your seat
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+
+                <!-- 03 -->
+
+                <div class="home-feature-card card-green">
+
+                    <div class="home-feature-top">
+
+                        <div class="home-feature-icon">
+                            📱
+                        </div>
+
+                        <div class="home-feature-number">
+                            03
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Manage Your Trip
+                    </h3>
+
+                    <p>
+                        Access and manage your bookings whenever you need.
+                    </p>
+
+                    <a href="/my-bookings">
+                        View bookings
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <section class="home-cta-section">
+
+        <div class="home-cta">
+
+            <div>
+
+                <div class="home-section-label">
+                    READY TO TRAVEL?
+                </div>
+
+                <h2>
+                    Your next journey starts here.
+                </h2>
+
+                <p>
+                    Search available buses and book your trip today.
+                </p>
+
+            </div>
+
+            <a href="/search" class="home-cta-button">
+                Explore Buses
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

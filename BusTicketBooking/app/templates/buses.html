@@ -1,0 +1,1068 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+BusGo - Available Buses
+{% endblock %}
+
+
+{% block head %}
+
+<style>
+
+    /* =====================================================
+       BUS RESULTS PAGE
+       Scoped only to .buses-page
+       Does NOT modify the other pages.
+    ===================================================== */
+
+    .buses-page {
+        min-height: calc(100vh - 72px);
+        background:
+            radial-gradient(
+                circle at 8% 5%,
+                rgba(37, 99, 235, 0.08),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 92% 15%,
+                rgba(99, 102, 241, 0.07),
+                transparent 28%
+            ),
+            #f7f9fc;
+
+        padding: 48px 20px 80px;
+    }
+
+
+    .buses-page * {
+        box-sizing: border-box;
+    }
+
+
+    .buses-wrapper {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+    }
+
+
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
+
+    .buses-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+
+        margin-bottom: 26px;
+    }
+
+
+    .buses-heading {
+        max-width: 700px;
+    }
+
+
+    .buses-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 7px 13px;
+
+        border-radius: 999px;
+
+        background: #eef4ff;
+        color: #2563eb;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+
+        margin-bottom: 13px;
+    }
+
+
+    .buses-eyebrow-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #2563eb;
+    }
+
+
+    .buses-heading h1 {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: clamp(30px, 4vw, 42px);
+        line-height: 1.15;
+
+        font-weight: 800;
+
+        letter-spacing: -0.035em;
+    }
+
+
+    .buses-heading h1 span {
+        color: #2563eb;
+    }
+
+
+    .buses-heading p {
+        margin: 10px 0 0;
+
+        color: #667085;
+
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+
+    .results-count {
+        flex-shrink: 0;
+
+        padding: 11px 16px;
+
+        border: 1px solid #e3e8f0;
+        border-radius: 12px;
+
+        background: #ffffff;
+
+        color: #475467;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+    }
+
+
+    /* =====================================================
+       SEARCH SUMMARY
+    ===================================================== */
+
+    .route-summary {
+        display: flex;
+        align-items: center;
+
+        gap: 0;
+
+        margin-bottom: 25px;
+
+        padding: 18px 22px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e9f0;
+        border-radius: 18px;
+
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.055);
+    }
+
+
+    .route-location {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        min-width: 190px;
+    }
+
+
+    .route-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        background: #eff6ff;
+
+        font-size: 18px;
+    }
+
+
+    .route-location small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #98a2b3;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+
+    .route-location strong {
+        display: block;
+
+        color: #1d2939;
+
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+
+    .route-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 65px;
+
+        color: #2563eb;
+
+        font-size: 22px;
+    }
+
+
+    .travel-date {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-left: auto;
+
+        padding-left: 25px;
+
+        border-left: 1px solid #e8ecf2;
+    }
+
+
+    .travel-date-icon {
+        font-size: 18px;
+    }
+
+
+    .travel-date small {
+        display: block;
+
+        color: #98a2b3;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+
+        margin-bottom: 2px;
+    }
+
+
+    .travel-date strong {
+        color: #344054;
+
+        font-size: 13px;
+    }
+
+
+    /* =====================================================
+       BUS CARD
+    ===================================================== */
+
+    .bus-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 16px;
+    }
+
+
+    .bus-card {
+        position: relative;
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(180px, 1.15fr)
+            minmax(230px, 1.5fr)
+            minmax(130px, 0.8fr)
+            minmax(120px, 0.65fr)
+            auto;
+
+        align-items: center;
+
+        gap: 24px;
+
+        padding: 24px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e9f0;
+        border-radius: 20px;
+
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.055);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+
+    .bus-card:hover {
+        transform: translateY(-3px);
+
+        border-color: #d3def2;
+
+        box-shadow: 0 16px 38px rgba(15, 23, 42, 0.09);
+    }
+
+
+    /* =====================================================
+       BUS OPERATOR
+    ===================================================== */
+
+    .bus-operator {
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+    }
+
+
+    .bus-logo {
+        width: 50px;
+        height: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 14px;
+
+        background: linear-gradient(
+            135deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+        font-size: 23px;
+    }
+
+
+    .bus-operator-info h3 {
+        margin: 0 0 5px;
+
+        color: #172033;
+
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+
+    .bus-operator-info p {
+        margin: 0;
+
+        color: #8a94a6;
+
+        font-size: 12px;
+    }
+
+
+    /* =====================================================
+       JOURNEY TIME
+    ===================================================== */
+
+    .journey-info {
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+    }
+
+
+    .journey-time {
+        min-width: 65px;
+    }
+
+
+    .journey-time strong {
+        display: block;
+
+        color: #172033;
+
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+
+    .journey-time span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #98a2b3;
+
+        font-size: 11px;
+    }
+
+
+    .journey-line {
+        flex: 1;
+
+        min-width: 55px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 5px;
+    }
+
+
+    .journey-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #2563eb;
+    }
+
+
+    .journey-line-inner {
+        flex: 1;
+
+        height: 1px;
+
+        background: #dbe3ef;
+
+        position: relative;
+    }
+
+
+    .journey-line-inner::after {
+        content: "›";
+
+        position: absolute;
+
+        right: -2px;
+        top: -10px;
+
+        color: #2563eb;
+
+        font-size: 16px;
+    }
+
+
+    .journey-duration {
+        text-align: center;
+
+        white-space: nowrap;
+    }
+
+
+    .journey-duration span {
+        display: block;
+
+        color: #98a2b3;
+
+        font-size: 10px;
+
+        margin-bottom: 2px;
+    }
+
+
+    .journey-duration strong {
+        color: #667085;
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       BUS FEATURES
+    ===================================================== */
+
+    .bus-features {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 7px;
+    }
+
+
+    .bus-feature {
+        padding: 6px 9px;
+
+        border-radius: 7px;
+
+        background: #f7f9fc;
+
+        border: 1px solid #edf0f4;
+
+        color: #667085;
+
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+
+    .bus-feature.ac {
+        background: #eff6ff;
+
+        border-color: #dbeafe;
+
+        color: #2563eb;
+    }
+
+
+    /* =====================================================
+       PRICE
+    ===================================================== */
+
+    .bus-price {
+        text-align: right;
+    }
+
+
+    .bus-price small {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #98a2b3;
+
+        font-size: 10px;
+    }
+
+
+    .bus-price strong {
+        display: block;
+
+        color: #172033;
+
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+
+    .bus-price span {
+        color: #98a2b3;
+
+        font-size: 10px;
+    }
+
+
+    /* =====================================================
+       BOOK BUTTON
+    ===================================================== */
+
+    .book-bus-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 110px;
+        height: 44px;
+
+        padding: 0 17px;
+
+        border-radius: 11px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        box-shadow: 0 7px 18px rgba(37, 99, 235, 0.2);
+
+        transition: all 0.2s ease;
+    }
+
+
+    .book-bus-button:hover {
+        background: #1d4ed8;
+
+        transform: translateY(-2px);
+
+        box-shadow: 0 11px 22px rgba(37, 99, 235, 0.27);
+    }
+
+
+    /* =====================================================
+       INFORMATION STRIP
+    ===================================================== */
+
+    .booking-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        margin-top: 25px;
+
+        color: #8a94a6;
+
+        font-size: 12px;
+    }
+
+
+    .booking-note strong {
+        color: #475467;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 1050px) {
+
+        .bus-card {
+            grid-template-columns:
+                1fr 1.5fr 1fr;
+
+            gap: 18px;
+        }
+
+
+        .bus-price {
+            text-align: left;
+        }
+
+
+        .book-bus-button {
+            width: 100%;
+        }
+
+    }
+
+
+    @media (max-width: 750px) {
+
+        .buses-page {
+            padding: 35px 15px 60px;
+        }
+
+
+        .buses-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+
+        .route-summary {
+            flex-wrap: wrap;
+
+            gap: 18px;
+        }
+
+
+        .travel-date {
+            width: 100%;
+
+            margin-left: 0;
+
+            padding-left: 0;
+
+            padding-top: 15px;
+
+            border-left: none;
+            border-top: 1px solid #e8ecf2;
+        }
+
+
+        .bus-card {
+            display: flex;
+            flex-direction: column;
+
+            align-items: stretch;
+
+            gap: 20px;
+
+            padding: 20px;
+        }
+
+
+        .bus-operator {
+            padding-bottom: 4px;
+
+            border-bottom: 1px solid #eef1f5;
+        }
+
+
+        .journey-info {
+            justify-content: space-between;
+        }
+
+
+        .bus-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            text-align: left;
+
+            padding-top: 15px;
+
+            border-top: 1px solid #eef1f5;
+        }
+
+
+        .bus-price small,
+        .bus-price span {
+            display: none;
+        }
+
+
+        .book-bus-button {
+            width: 100%;
+        }
+
+    }
+
+
+    @media (max-width: 450px) {
+
+        .buses-heading h1 {
+            font-size: 30px;
+        }
+
+
+        .route-summary {
+            padding: 16px;
+        }
+
+
+        .route-location {
+            min-width: 0;
+        }
+
+
+        .route-arrow {
+            width: 35px;
+        }
+
+
+        .journey-time strong {
+            font-size: 15px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="buses-page">
+
+    <div class="buses-wrapper">
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <section class="buses-header">
+
+            <div class="buses-heading">
+
+                <div class="buses-eyebrow">
+
+                    <span class="buses-eyebrow-dot"></span>
+
+                    BusGo Results
+
+                </div>
+
+
+                <h1>
+                    Available <span>Buses</span>
+                </h1>
+
+
+                <p>
+                    Choose the bus that best fits your journey
+                    and reserve your seat with ease.
+                </p>
+
+            </div>
+
+
+            <div class="results-count">
+                1 bus available
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ROUTE SUMMARY
+        ================================================== -->
+
+        <div class="route-summary">
+
+
+            <div class="route-location">
+
+                <div class="route-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <small>
+                        From
+                    </small>
+
+                    <strong>
+                        Belagavi
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="route-arrow">
+                →
+            </div>
+
+
+            <div class="route-location">
+
+                <div class="route-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <small>
+                        To
+                    </small>
+
+                    <strong>
+                        Bengaluru
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="travel-date">
+
+                <span class="travel-date-icon">
+                    📅
+                </span>
+
+                <div>
+
+                    <small>
+                        Travel Date
+                    </small>
+
+                    <strong>
+                        Select your travel date
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             BUS LIST
+        ================================================== -->
+
+        <div class="bus-list">
+
+
+            <!-- BUS CARD -->
+
+            <article class="bus-card">
+
+
+                <!-- Operator -->
+
+                <div class="bus-operator">
+
+                    <div class="bus-logo">
+                        🚌
+                    </div>
+
+                    <div class="bus-operator-info">
+
+                        <h3>
+                            Express Travels
+                        </h3>
+
+                        <p>
+                            Comfortable intercity service
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Journey -->
+
+                <div class="journey-info">
+
+
+                    <div class="journey-time">
+
+                        <strong>
+                            09:00 AM
+                        </strong>
+
+                        <span>
+                            Belagavi
+                        </span>
+
+                    </div>
+
+
+                    <div class="journey-line">
+
+                        <span class="journey-dot"></span>
+
+                        <div class="journey-line-inner"></div>
+
+                        <span class="journey-dot"></span>
+
+                    </div>
+
+
+                    <div class="journey-duration">
+
+                        <span>
+                            Duration
+                        </span>
+
+                        <strong>
+                            6h 00m
+                        </strong>
+
+                    </div>
+
+
+                    <div class="journey-time">
+
+                        <strong>
+                            03:00 PM
+                        </strong>
+
+                        <span>
+                            Bengaluru
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Features -->
+
+                <div class="bus-features">
+
+                    <span class="bus-feature ac">
+                        ❄ AC
+                    </span>
+
+                    <span class="bus-feature">
+                        💺 Seater
+                    </span>
+
+                    <span class="bus-feature">
+                        📶 Wi-Fi
+                    </span>
+
+                </div>
+
+
+                <!-- Price -->
+
+                <div class="bus-price">
+
+                    <div>
+
+                        <small>
+                            Starting from
+                        </small>
+
+                        <strong>
+                            ₹599
+                        </strong>
+
+                        <span>
+                            per passenger
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Book -->
+
+                <a
+                    href="/booking"
+                    class="book-bus-button"
+                >
+                    View Seats →
+                </a>
+
+
+            </article>
+
+
+        </div>
+
+
+        <!-- =================================================
+             NOTE
+        ================================================== -->
+
+        <div class="booking-note">
+
+            🔒
+
+            <span>
+                <strong>Secure booking.</strong>
+                Your reservation details are protected.
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

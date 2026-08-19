@@ -1,0 +1,303 @@
+{% extends "base.html" %} 
+ 
+{% block title %} 
+BusGo - Create Account 
+{% endblock %} 
+ 
+{% block content %} 
+ 
+<section class="register-page"> 
+ 
+    <div class="register-wrapper"> 
+ 
+        <!-- LEFT SIDE --> 
+        <div class="register-intro"> 
+ 
+            <div class="register-brand"> 
+                <span class="register-brand-icon">🚌</span> 
+ 
+                <div> 
+                    <strong>BusGo</strong> 
+                    <span>Bus Ticket Reservation</span> 
+                </div> 
+            </div> 
+ 
+            <div class="register-intro-content"> 
+ 
+                <span class="register-label"> 
+                    START YOUR JOURNEY 
+                </span> 
+ 
+                <h1> 
+                    Travel smarter.<br> 
+                    <span>Book with confidence.</span> 
+                </h1> 
+ 
+                <p> 
+                    Create your BusGo account and enjoy a simple, 
+                    secure and convenient way to plan and manage 
+                    your bus journeys. 
+                </p> 
+ 
+                <div class="register-benefits"> 
+ 
+                    <div class="register-benefit"> 
+                        <div class="register-benefit-icon"> 
+                            🔎 
+                        </div> 
+ 
+                        <div> 
+                            <strong>Find the right bus</strong> 
+                            <span>Search routes quickly and easily.</span> 
+                        </div> 
+                    </div> 
+ 
+                    <div class="register-benefit"> 
+                        <div class="register-benefit-icon"> 
+                            🎫 
+                        </div> 
+ 
+                        <div> 
+                            <strong>Book your seat</strong> 
+                            <span>Reserve your preferred seat with ease.</span> 
+                        </div> 
+                    </div> 
+ 
+                    <div class="register-benefit"> 
+                        <div class="register-benefit-icon"> 
+                            🛡️ 
+                        </div> 
+ 
+                        <div> 
+                            <strong>Manage your journey</strong> 
+                            <span>Keep your bookings organized in one place.</span> 
+                        </div> 
+                    </div> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+ 
+        <!-- RIGHT SIDE --> 
+        <div class="register-card"> 
+ 
+            <div class="register-card-header"> 
+ 
+                <div class="register-card-icon"> 
+                    ✨ 
+                </div> 
+ 
+                <div> 
+                    <h2>Create your account</h2> 
+ 
+                    <p> 
+                        Join BusGo and start booking your journeys. 
+                    </p> 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <!-- Error / Success Messages --> 
+ 
+            {% if error %} 
+            <div class="register-message register-error"> 
+                <span>⚠</span> 
+                <span>{{ error }}</span> 
+            </div> 
+            {% endif %} 
+ 
+            {% if message %} 
+            <div class="register-message register-success"> 
+                <span>✓</span> 
+                <span>{{ message }}</span> 
+            </div> 
+            {% endif %} 
+ 
+ 
+            <!-- ONLY FIXED: action changed to /auth/register-form --> 
+            <form action="/auth/register-form" method="post" class="register-form"> 
+ 
+                <!-- Full Name --> 
+ 
+                <div class="register-field"> 
+ 
+                    <label for="full_name"> 
+                        Full Name 
+                    </label> 
+ 
+                    <div class="register-input-wrapper"> 
+ 
+                        <span class="register-input-icon"> 
+                            👤 
+                        </span> 
+ 
+                        <input 
+                            type="text" 
+                            id="full_name" 
+                            name="full_name" 
+                            placeholder="Enter your full name" 
+                            autocomplete="name" 
+                            required 
+                        > 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <!-- Email --> 
+ 
+                <div class="register-field"> 
+ 
+                    <label for="email"> 
+                        Email Address 
+                    </label> 
+ 
+                    <div class="register-input-wrapper"> 
+ 
+                        <span class="register-input-icon"> 
+                            ✉ 
+                        </span> 
+ 
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your email address" 
+                            autocomplete="email" 
+                            required 
+                        > 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <!-- Password --> 
+ 
+                <div class="register-field"> 
+ 
+                    <label for="password"> 
+                        Password 
+                    </label> 
+ 
+                    <div class="register-input-wrapper"> 
+ 
+                        <span class="register-input-icon"> 
+                            🔒 
+                        </span> 
+ 
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Create a password" 
+                            autocomplete="new-password" 
+                            required 
+                        > 
+ 
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            onclick="togglePassword()" 
+                            aria-label="Show password" 
+                        > 
+                            ◉ 
+                        </button> 
+ 
+                    </div> 
+ 
+                    <div class="password-hint"> 
+                        Use a password that is easy for you to remember 
+                        but difficult for others to guess. 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <!-- Terms --> 
+ 
+                <label class="register-terms"> 
+ 
+                    <input 
+                        type="checkbox" 
+                        name="terms" 
+                        required 
+                    > 
+ 
+                    <span> 
+                        I agree to the terms and conditions and 
+                        understand that my account information will 
+                        be securely stored. 
+                    </span> 
+ 
+                </label> 
+ 
+ 
+                <!-- Submit --> 
+ 
+                <button 
+                    type="submit" 
+                    class="register-submit" 
+                > 
+                    <span>Create Account</span> 
+                    <span class="register-submit-arrow">→</span> 
+                </button> 
+ 
+            </form> 
+ 
+ 
+            <!-- Login --> 
+ 
+            <div class="register-login"> 
+ 
+                <span>Already have an account?</span> 
+ 
+                <a href="/login"> 
+                    Sign in 
+                </a> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+</section> 
+ 
+{% endblock %} 
+ 
+ 
+{% block scripts %} 
+ 
+<script> 
+ 
+function togglePassword() { 
+ 
+    const password = 
+        document.getElementById("password"); 
+ 
+    const button = 
+        document.querySelector(".password-toggle"); 
+ 
+    if (password.type === "password") { 
+ 
+        password.type = "text"; 
+        button.textContent = "◉"; 
+ 
+    } else { 
+ 
+        password.type = "password"; 
+        button.textContent = "◉"; 
+ 
+    } 
+ 
+} 
+ 
+</script> 
+ 
+{% endblock %}

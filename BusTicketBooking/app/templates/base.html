@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}BusGo - Bus Ticket Reservation{% endblock %}</title>
+
+    <meta name="description"
+          content="BusGo - Fast, simple and secure bus ticket reservation.">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<header class="site-header">
+
+    <nav class="navbar">
+
+        <!-- Logo -->
+        <a href="/" class="brand">
+            <span class="brand-icon">🚌</span>
+
+            <span class="brand-name">
+                Bus<span>Go</span>
+            </span>
+        </a>
+
+
+        <!-- Navigation -->
+        <div class="nav-links">
+
+            <a href="/" class="nav-link active">
+                Home
+            </a>
+
+            <a href="/search" class="nav-link">
+                Search Buses
+            </a>
+
+            <a href="/my-bookings" class="nav-link">
+                My Bookings
+            </a>
+
+            <div id="navbar-auth">
+    <a href="/login" class="nav-login">
+        Login
+    </a>
+
+    <a href="/register" class="nav-register">
+        Create Account
+    </a>
+</div>
+
+        </div>
+
+
+        <!-- Mobile menu -->
+        <button
+            class="mobile-menu-btn"
+            type="button"
+            aria-label="Open navigation menu"
+            onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')"
+        >
+            ☰
+        </button>
+
+    </nav>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main>
+
+    {% block content %}{% endblock %}
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="footer-container">
+
+        <div class="footer-brand-section">
+
+            <a href="/" class="brand footer-logo">
+
+                <span class="brand-icon">🚌</span>
+
+                <span class="brand-name">
+                    Bus<span>Go</span>
+                </span>
+
+            </a>
+
+            <p>
+                Travel smarter. Book your journey with confidence.
+            </p>
+
+            <div class="footer-badge">
+                ✓ Secure & Reliable Booking
+            </div>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Explore</h4>
+
+            <a href="/">Home</a>
+
+            <a href="/search">
+                Search Buses
+            </a>
+
+            <a href="/my-bookings">
+                My Bookings
+            </a>
+
+        </div>
+
+
+        <div class="footer-column" id="footer-auth">
+
+    <h4>Account</h4>
+
+    <a href="/login">
+        Login
+    </a>
+
+    <a href="/register">
+        Create Account
+    </a>
+
+</div>
+
+        <div class="footer-column">
+
+            <h4>Why BusGo?</h4>
+
+            <span>Easy Booking</span>
+            <span>Secure Payments</span>
+            <span>24/7 Access</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 BusGo. All rights reserved.
+        </span>
+
+        <span>
+            Cloud Bus Ticket Reservation System
+        </span>
+
+    </div>
+
+</footer>
+
+
+{% block scripts %}{% endblock %}
+
+<script src="/static/js/auth.js"></script>
+
+</body>
+</html>

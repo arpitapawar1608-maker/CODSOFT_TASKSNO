@@ -1,0 +1,701 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search Buses - BusGo
+{% endblock %}
+
+{% block head %}
+<style>
+
+.search-page {
+    min-height: calc(100vh - 160px);
+    background:
+        radial-gradient(circle at 8% 18%, rgba(59,130,246,.13), transparent 28%),
+        radial-gradient(circle at 92% 22%, rgba(96,165,250,.10), transparent 28%),
+        linear-gradient(180deg,#f5f8ff 0%,#f8fafc 100%);
+    padding: 70px 24px 90px;
+}
+
+.search-page * {
+    box-sizing: border-box;
+}
+
+.search-page-container {
+    width: min(1180px,100%);
+    margin: 0 auto;
+}
+
+/* HERO */
+
+.search-hero {
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto 46px;
+}
+
+.search-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 18px;
+    border-radius: 30px;
+    background: #edf4ff;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    margin-bottom: 22px;
+}
+
+.search-hero h1 {
+    margin: 0;
+    color: #0f1f3d;
+    font-size: clamp(38px,5vw,58px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -1.8px;
+}
+
+.search-hero h1 span {
+    color: #2563eb;
+}
+
+.search-hero p {
+    max-width: 720px;
+    margin: 20px auto 0;
+    color: #64748b;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* SEARCH PANEL */
+
+.search-panel {
+    background: rgba(255,255,255,.97);
+    border: 1px solid #e1e8f2;
+    border-radius: 26px;
+    padding: 34px;
+    box-shadow:
+        0 25px 60px rgba(15,31,61,.10),
+        0 8px 20px rgba(15,31,61,.04);
+    margin-bottom: 55px;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.panel-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: #edf4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.panel-heading h2 {
+    margin: 0;
+    color: #102344;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.panel-heading p {
+    margin: 5px 0 0;
+    color: #8a9bb5;
+    font-size: 14px;
+}
+
+/* FORM */
+
+.search-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 18px;
+    align-items: end;
+}
+
+.field-group label {
+    display: block;
+    margin-bottom: 9px;
+    color: #15294b;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-box {
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 16px;
+    background: #f9fbfe;
+    border: 1px solid #dbe4f0;
+    border-radius: 13px;
+    transition: .2s ease;
+}
+
+.input-box:focus-within {
+    background: #fff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59,130,246,.10);
+}
+
+.input-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #15294b;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.input-box input::placeholder {
+    color: #9aaac0;
+}
+
+/* BUTTON */
+
+.search-submit {
+    height: 58px;
+    border: 0;
+    border-radius: 13px;
+    padding: 0 28px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(37,99,235,.22);
+    transition: .2s ease;
+    white-space: nowrap;
+}
+
+.search-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(37,99,235,.28);
+}
+
+/* RESULTS */
+
+.results-section {
+    margin-top: 10px;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.results-header h2 {
+    margin: 0;
+    color: #102344;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.results-header span {
+    color: #71839e;
+    font-size: 14px;
+}
+
+.bus-list {
+    display: grid;
+    gap: 18px;
+}
+
+.bus-card {
+    background: #fff;
+    border: 1px solid #e1e8f2;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(15,31,61,.05);
+    transition: .2s ease;
+}
+
+.bus-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 32px rgba(15,31,61,.09);
+    border-color: #c7d9f7;
+}
+
+.bus-main {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr .7fr auto;
+    gap: 25px;
+    align-items: center;
+}
+
+.bus-name {
+    color: #102344;
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.bus-route {
+    color: #71839e;
+    font-size: 14px;
+}
+
+.time-block {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.time {
+    color: #15294b;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.time-label {
+    color: #8ca0bc;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.arrow {
+    color: #2563eb;
+    font-size: 20px;
+}
+
+.seats-info {
+    text-align: center;
+}
+
+.seats-number {
+    display: block;
+    color: #16a34a;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.seats-label {
+    color: #8ca0bc;
+    font-size: 12px;
+}
+
+.select-seat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 9px 20px rgba(37,99,235,.20);
+    transition: .2s ease;
+}
+
+.select-seat:hover {
+    transform: translateY(-2px);
+    color: #fff;
+}
+
+/* EMPTY */
+
+.empty-results {
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e1e8f2;
+    border-radius: 20px;
+    padding: 55px 25px;
+    box-shadow: 0 8px 25px rgba(15,31,61,.04);
+}
+
+.empty-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.empty-results h3 {
+    color: #102344;
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+.empty-results p {
+    color: #71839e;
+    margin: 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width:950px) {
+
+    .search-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-submit {
+        width: 100%;
+    }
+
+    .bus-main {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width:650px) {
+
+    .search-page {
+        padding: 45px 16px 65px;
+    }
+
+    .search-panel {
+        padding: 23px;
+        border-radius: 20px;
+    }
+
+    .search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .bus-main {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .seats-info {
+        text-align: left;
+    }
+
+    .results-header {
+        display: block;
+    }
+
+    .results-header span {
+        display: block;
+        margin-top: 7px;
+    }
+
+    .search-hero h1 {
+        font-size: 38px;
+    }
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="search-page">
+
+    <div class="search-page-container">
+
+        <!-- HERO -->
+
+        <section class="search-hero">
+
+            <div class="search-badge">
+                <span>🚌</span>
+                BUSGO SEARCH
+            </div>
+
+            <h1>
+                Find Your <span>Perfect Bus</span>
+            </h1>
+
+            <p>
+                Search available buses, compare routes and choose
+                a convenient journey for your travel.
+            </p>
+
+        </section>
+
+
+        <!-- SEARCH FORM -->
+
+        <section class="search-panel">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon">
+                    🔎
+                </div>
+
+                <div>
+                    <h2>Search Bus Routes</h2>
+                    <p>Enter your journey details below</p>
+                </div>
+
+            </div>
+
+
+            <form
+                action="/search"
+                method="get"
+                class="search-form"
+            >
+
+                <!-- FROM -->
+
+                <div class="field-group">
+
+                    <label for="from">
+                        From
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            📍
+                        </span>
+
+                        <input
+                            type="text"
+                            id="from"
+                            name="from_"
+                            placeholder="Departure city"
+                            value="{{ search_from }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- TO -->
+
+                <div class="field-group">
+
+                    <label for="to">
+                        To
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            📍
+                        </span>
+
+                        <input
+                            type="text"
+                            id="to"
+                            name="to"
+                            placeholder="Destination city"
+                            value="{{ search_to }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="field-group">
+
+                    <label for="date">
+                        Travel Date
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            📅
+                        </span>
+
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            value="{{ travel_date }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <button
+                    type="submit"
+                    class="search-submit"
+                >
+                    🔎 Search Buses
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- RESULTS -->
+
+        {% if search_from and search_to %}
+
+        <section class="results-section">
+
+            <div class="results-header">
+
+                <h2>
+                    Available Buses
+                </h2>
+
+                <span>
+                    {{ buses|length }}
+                    bus{% if buses|length != 1 %}es{% endif %}
+                    found
+                </span>
+
+            </div>
+
+
+            {% if buses %}
+
+            <div class="bus-list">
+
+                {% for bus in buses %}
+
+                <div class="bus-card">
+
+                    <div class="bus-main">
+
+                        <!-- BUS -->
+
+                        <div>
+
+                            <div class="bus-name">
+                                {{ bus.bus_name }}
+                            </div>
+
+                            <div class="bus-route">
+                                {{ bus.source }}
+                                →
+                                {{ bus.destination }}
+                            </div>
+
+                        </div>
+
+
+                        <!-- TIME -->
+
+                        <div class="time-block">
+
+                            <div>
+
+                                <div class="time">
+                                    {{ bus.departure_time }}
+                                </div>
+
+                                <div class="time-label">
+                                    Departure
+                                </div>
+
+                            </div>
+
+                            <div class="arrow">
+                                →
+                            </div>
+
+                            <div>
+
+                                <div class="time">
+                                    {{ bus.arrival_time }}
+                                </div>
+
+                                <div class="time-label">
+                                    Arrival
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEATS -->
+
+                        <div class="seats-info">
+
+                            <span class="seats-number">
+                                {{ bus.total_seats }}
+                            </span>
+
+                            <span class="seats-label">
+                                Total seats
+                            </span>
+
+                        </div>
+
+
+                        <!-- SELECT -->
+
+                        <div>
+
+                            <a
+                                href="/booking?bus_id={{ bus.id }}&travel_date={{ travel_date }}"
+                                class="select-seat"
+                            >
+                                Select Seat
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            {% else %}
+
+            <div class="empty-results">
+
+                <div class="empty-icon">
+                    🚌
+                </div>
+
+                <h3>
+                    No buses found
+                </h3>
+
+                <p>
+                    No buses are available from
+                    <strong>{{ search_from }}</strong>
+                    to
+                    <strong>{{ search_to }}</strong>.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

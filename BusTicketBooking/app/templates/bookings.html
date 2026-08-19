@@ -1,0 +1,1029 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Bookings - BusGo
+{% endblock %}
+
+{% block head %}
+
+<style>
+
+/* =========================================================
+   MY BOOKINGS PAGE ONLY
+   Scoped under .bookings-page so other pages are untouched.
+========================================================= */
+
+.bookings-page {
+    min-height: calc(100vh - 160px);
+    background:
+        radial-gradient(
+            circle at 8% 15%,
+            rgba(59, 130, 246, 0.13),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 20%,
+            rgba(96, 165, 250, 0.10),
+            transparent 28%
+        ),
+        linear-gradient(
+            180deg,
+            #f5f8ff 0%,
+            #f8fafc 100%
+        );
+
+    padding: 70px 24px 90px;
+}
+
+.bookings-page * {
+    box-sizing: border-box;
+}
+
+.bookings-container {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HERO
+========================================================= */
+
+.bookings-page .bookings-hero {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 45px;
+}
+
+.bookings-page .bookings-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 18px;
+
+    border-radius: 30px;
+
+    background: #edf4ff;
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+
+    margin-bottom: 22px;
+}
+
+.bookings-page .bookings-hero h1 {
+    margin: 0;
+
+    color: #0f1f3d;
+
+    font-size: clamp(38px, 5vw, 56px);
+    line-height: 1.08;
+
+    font-weight: 800;
+
+    letter-spacing: -1.8px;
+}
+
+.bookings-page .bookings-hero h1 span {
+    color: #2563eb;
+}
+
+.bookings-page .bookings-hero p {
+    max-width: 700px;
+
+    margin: 18px auto 0;
+
+    color: #64748b;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+.bookings-page .summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.bookings-page .summary-card {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8f2;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 24px rgba(15, 31, 61, 0.05);
+
+    transition: all 0.2s ease;
+}
+
+.bookings-page .summary-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 14px 30px rgba(15, 31, 61, 0.08);
+}
+
+.bookings-page .summary-icon {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #edf4ff;
+
+    font-size: 23px;
+}
+
+.bookings-page .summary-content small {
+    display: block;
+
+    color: #8a9bb5;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    margin-bottom: 5px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bookings-page .summary-content strong {
+    display: block;
+
+    color: #15294b;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   BOOKING CARD
+========================================================= */
+
+.bookings-page .booking-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7f2;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 20px 50px rgba(15, 31, 61, 0.09);
+}
+
+
+/* =========================================================
+   BOOKING HEADER
+========================================================= */
+
+.bookings-page .booking-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 25px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0f6ff,
+            #f8fbff
+        );
+
+    border-bottom: 1px solid #e5ebf3;
+}
+
+.bookings-page .booking-reference {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.bookings-page .booking-reference-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color: white;
+
+    font-size: 22px;
+
+    box-shadow:
+        0 10px 20px rgba(37, 99, 235, 0.22);
+}
+
+.bookings-page .reference-label {
+    display: block;
+
+    color: #7b8da8;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    margin-bottom: 4px;
+}
+
+.bookings-page .reference-number {
+    color: #102344;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.bookings-page .booking-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 10px 16px;
+
+    border-radius: 30px;
+
+    background: #ecfdf3;
+
+    color: #15803d;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+.bookings-page .booking-status.cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bookings-page .booking-status.cancelled .status-dot {
+    background: #ef4444;
+}
+
+.bookings-page .status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+
+/* =========================================================
+   ROUTE SECTION
+========================================================= */
+
+.bookings-page .route-section {
+    display: grid;
+
+    grid-template-columns:
+        1fr 120px 1fr;
+
+    align-items: center;
+
+    padding: 38px 34px;
+
+    border-bottom: 1px solid #e8edf4;
+}
+
+.bookings-page .location {
+    display: flex;
+    flex-direction: column;
+}
+
+.bookings-page .location.destination {
+    align-items: flex-end;
+
+    text-align: right;
+}
+
+.bookings-page .location-label {
+    color: #8ca0bc;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    margin-bottom: 9px;
+}
+
+.bookings-page .location-name {
+    color: #142a4d;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    margin-bottom: 7px;
+}
+
+.bookings-page .location-time {
+    color: #6b7f9b;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* Route center */
+
+.bookings-page .route-line {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.bookings-page .bus-route-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #edf4ff;
+
+    font-size: 22px;
+}
+
+.bookings-page .route-arrow {
+    position: relative;
+
+    width: 90px;
+    height: 2px;
+
+    background: #cbdaf0;
+}
+
+.bookings-page .route-arrow::after {
+    content: "›";
+
+    position: absolute;
+
+    right: -2px;
+    top: 50%;
+
+    transform: translateY(-55%);
+
+    color: #2563eb;
+
+    font-size: 27px;
+    font-weight: 700;
+
+    background: #ffffff;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+.bookings-page .booking-details {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    padding: 28px 34px;
+}
+
+.bookings-page .detail-box {
+    padding: 21px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e6ebf2;
+
+    border-radius: 16px;
+}
+
+.bookings-page .detail-label {
+    display: block;
+
+    color: #8ca0bc;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    margin-bottom: 9px;
+}
+
+.bookings-page .detail-value {
+    color: #172b4d;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   BOOKING FOOTER
+========================================================= */
+
+.bookings-page .booking-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 24px 34px;
+
+    border-top: 1px solid #e8edf4;
+
+    background: #ffffff;
+}
+
+.bookings-page .booking-message {
+    color: #617694;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bookings-page .booking-message strong {
+    color: #2563eb;
+}
+
+
+/* Cancel button */
+
+.bookings-page .cancel-button {
+    min-width: 155px;
+
+    height: 48px;
+
+    padding: 0 22px;
+
+    border-radius: 12px;
+
+    border: 1px solid #fecaca;
+
+    background: #fff7f7;
+
+    color: #dc2626;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.bookings-page .cancel-button:hover {
+    background: #fee2e2;
+
+    border-color: #fca5a5;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   BOTTOM NOTE
+========================================================= */
+
+.bookings-page .security-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 24px;
+
+    color: #8a9bb5;
+
+    font-size: 13px;
+}
+
+.bookings-page .security-note span {
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .bookings-page .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bookings-page .route-section {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+
+        text-align: center;
+    }
+
+    .bookings-page .location,
+    .bookings-page .location.destination {
+        align-items: center;
+
+        text-align: center;
+    }
+
+    .bookings-page .route-line {
+        order: 2;
+    }
+
+    .bookings-page .booking-details {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .bookings-page {
+        padding: 45px 16px 65px;
+    }
+
+    .bookings-page .booking-header {
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+
+        padding: 22px;
+    }
+
+    .bookings-page .booking-status {
+        align-self: flex-start;
+    }
+
+    .bookings-page .route-section {
+        padding: 30px 22px;
+    }
+
+    .bookings-page .booking-details {
+        padding: 22px;
+    }
+
+    .bookings-page .booking-footer {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        padding: 22px;
+    }
+
+    .bookings-page .cancel-button {
+        width: 100%;
+    }
+
+    .bookings-page .location-name {
+        font-size: 23px;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="bookings-page">
+
+    <div class="bookings-container">
+
+        <!-- =================================================
+             PAGE HERO
+        ================================================== -->
+
+        <section class="bookings-hero">
+
+            <div class="bookings-badge">
+                🚌
+                BUSGO BOOKINGS
+            </div>
+
+            <h1>
+                My <span>Bookings</span>
+            </h1>
+
+            <p>
+                View your upcoming journey, ticket details
+                and booking information all in one place.
+            </p>
+
+        </section>
+
+
+        {% if bookings and bookings|length > 0 %}
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🎫
+                </div>
+
+                <div class="summary-content">
+
+                    <small>
+                        My Ticket
+                    </small>
+
+                    <strong>
+                        Booking ID #{{ bookings[0].id }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🚌
+                </div>
+
+                <div class="summary-content">
+
+                    <small>
+                        Bus Service
+                    </small>
+
+                    <strong>
+                        {{ bookings[0].bus.bus_name if bookings[0].bus else "Bus Service" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    📅
+                </div>
+
+                <div class="summary-content">
+
+                    <small>
+                        Travel Date
+                    </small>
+
+                    <strong>
+                        {{ bookings[0].travel_date }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ALL BOOKINGS
+        ================================================== -->
+
+        {% for booking in bookings %}
+
+        <section class="booking-card">
+
+            <!-- Booking Header -->
+
+            <div class="booking-header">
+
+                <div class="booking-reference">
+
+                    <div class="booking-reference-icon">
+                        🎫
+                    </div>
+
+                    <div>
+
+                        <span class="reference-label">
+                            BOOKING REFERENCE
+                        </span>
+
+                        <span class="reference-number">
+                            #BG-{{ "%04d"|format(booking.id) }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="booking-status {% if booking.booking_status == 'Cancelled' %}cancelled{% endif %}">
+
+                    <span class="status-dot"></span>
+
+                    {{ booking.booking_status }}
+
+                </div>
+
+            </div>
+
+
+            <!-- Route -->
+
+            <div class="route-section">
+
+                <div class="location">
+
+                    <span class="location-label">
+                        DEPARTURE
+                    </span>
+
+                    <span class="location-name">
+                        {{ booking.bus.source if booking.bus else "—" }}
+                    </span>
+
+                    <span class="location-time">
+                        {{ booking.bus.departure_time if booking.bus else "" }}
+                    </span>
+
+                </div>
+
+
+                <div class="route-line">
+
+                    <div class="bus-route-icon">
+                        🚌
+                    </div>
+
+                    <div class="route-arrow"></div>
+
+                </div>
+
+
+                <div class="location destination">
+
+                    <span class="location-label">
+                        DESTINATION
+                    </span>
+
+                    <span class="location-name">
+                        {{ booking.bus.destination if booking.bus else "—" }}
+                    </span>
+
+                    <span class="location-time">
+                        {{ booking.bus.arrival_time if booking.bus else "" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Booking Details -->
+
+            <div class="booking-details">
+
+                <div class="detail-box">
+
+                    <span class="detail-label">
+                        Bus
+                    </span>
+
+                    <span class="detail-value">
+                        {{ booking.bus.bus_name if booking.bus else "Bus Service" }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span class="detail-label">
+                        Seat Number
+                    </span>
+
+                    <span class="detail-value">
+                        💺 {{ booking.seat_number }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span class="detail-label">
+                        Travel Date
+                    </span>
+
+                    <span class="detail-value">
+                        {{ booking.travel_date }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Booking Footer -->
+
+            <div class="booking-footer">
+
+                <div class="booking-message">
+
+                    ✓ Your seat is reserved successfully.
+
+                </div>
+
+
+                {% if booking.booking_status == "Booked" %}
+
+                <form
+                    action="/bookings/{{ booking.id }}"
+                    method="post"
+                >
+
+                    <input
+                        type="hidden"
+                        name="_method"
+                        value="DELETE"
+                    >
+
+                    <button
+                        type="button"
+                        class="cancel-button"
+                        onclick="cancelBooking({{ booking.id }})"
+                    >
+                        Cancel Booking
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        {% endfor %}
+
+
+        {% else %}
+
+        <!-- =================================================
+             NO BOOKINGS
+        ================================================== -->
+
+        <section class="booking-card">
+
+            <div class="booking-header">
+
+                <div class="booking-reference">
+
+                    <div class="booking-reference-icon">
+                        🎫
+                    </div>
+
+                    <div>
+
+                        <span class="reference-label">
+                            MY BOOKINGS
+                        </span>
+
+                        <span class="reference-number">
+                            No bookings yet
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="booking-footer">
+
+                <div class="booking-message">
+                    You haven't booked any bus tickets yet.
+                </div>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- Security Note -->
+
+        <div class="security-note">
+
+            <span>🛡️</span>
+
+            Your booking information is securely managed by BusGo.
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function cancelBooking(bookingId) {
+
+    if (!confirm("Are you sure you want to cancel this booking?")) {
+        return;
+    }
+
+    const response = await fetch(
+        `/bookings/${bookingId}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    if (response.ok) {
+
+        window.location.href = "/my-bookings";
+
+    } else {
+
+        const data = await response.json();
+
+        alert(data.detail || "Unable to cancel booking.");
+
+    }
+
+}
+
+</script>
+
+
+{% endblock %}

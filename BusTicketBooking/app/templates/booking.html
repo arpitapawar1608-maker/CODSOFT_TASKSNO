@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+
+{% block title %}
+Select Seat - BusGo
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.booking-page {
+    min-height: calc(100vh - 160px);
+    background:
+        radial-gradient(circle at 10% 15%, rgba(59,130,246,.12), transparent 28%),
+        linear-gradient(180deg,#f5f8ff,#f8fafc);
+    padding: 60px 20px 80px;
+}
+
+.booking-container {
+    width: min(1050px,100%);
+    margin: auto;
+}
+
+.booking-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.booking-header h1 {
+    color: #102344;
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.booking-header p {
+    color: #71839e;
+}
+
+.booking-card {
+    background: white;
+    border: 1px solid #e1e8f2;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(15,31,61,.08);
+}
+
+.bus-summary {
+    background: #f5f8ff;
+    border-radius: 17px;
+    padding: 22px;
+    margin-bottom: 30px;
+}
+
+.bus-summary h2 {
+    margin: 0 0 7px;
+    color: #102344;
+    font-size: 22px;
+}
+
+.route {
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.summary-row {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.summary-item strong {
+    display: block;
+    color: #15294b;
+}
+
+.summary-item span {
+    color: #8ca0bc;
+    font-size: 13px;
+}
+
+.booking-layout {
+    display: grid;
+    grid-template-columns: 1fr 330px;
+    gap: 35px;
+}
+
+.section-title {
+    color: #102344;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.seat-area {
+    background: #f9fbfe;
+    border: 1px solid #e1e8f2;
+    border-radius: 18px;
+    padding: 25px;
+}
+
+.driver {
+    text-align: right;
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 13px;
+    max-width: 350px;
+    margin: auto;
+}
+
+.seat {
+    height: 48px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: white;
+    color: #15294b;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+.seat:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.seat.selected {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.seat.booked {
+    background: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+    border-color: #cbd5e1;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.legend-box {
+    width: 17px;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid #cbd5e1;
+    background: white;
+}
+
+.legend-box.selected {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.legend-box.booked {
+    background: #cbd5e1;
+}
+
+.booking-form {
+    background: #fff;
+    border: 1px solid #e1e8f2;
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    color: #15294b;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    padding: 0 13px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.10);
+}
+
+.selected-display {
+    background: #edf4ff;
+    border-radius: 10px;
+    padding: 13px;
+    margin-bottom: 18px;
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.confirm-button {
+    width: 100%;
+    height: 50px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.confirm-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.no-bus {
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+}
+
+@media(max-width:800px) {
+    .booking-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:500px) {
+    .booking-card {
+        padding: 18px;
+    }
+
+    .seat-grid {
+        gap: 8px;
+    }
+}
+
+</style>
+
+
+<div class="booking-page">
+
+    <div class="booking-container">
+
+        <a href="/search" class="back-link">
+            ← Back to Search
+        </a>
+
+
+        {% if bus %}
+
+        <div class="booking-header">
+
+            <h1>
+                Select Your Seat
+            </h1>
+
+            <p>
+                Choose an available seat for your journey.
+            </p>
+
+        </div>
+
+
+        <div class="booking-card">
+
+            <div class="bus-summary">
+
+                <h2>
+                    {{ bus.bus_name }}
+                </h2>
+
+                <div class="route">
+                    {{ bus.source }} → {{ bus.destination }}
+                </div>
+
+                <div class="summary-row">
+
+                    <div class="summary-item">
+                        <strong>{{ bus.departure_time }}</strong>
+                        <span>Departure</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <strong>{{ bus.arrival_time }}</strong>
+                        <span>Arrival</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <strong>{{ travel_date }}</strong>
+                        <span>Travel Date</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <strong>{{ bus.total_seats }}</strong>
+                        <span>Total Seats</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="booking-layout">
+
+
+                <!-- SEATS -->
+
+                <div>
+
+                    <div class="section-title">
+                        Select a Seat
+                    </div>
+
+                    <div class="seat-area">
+
+                        <div class="driver">
+                            🚗 Driver
+                        </div>
+
+                        <div class="seat-grid">
+
+                            {% for number in range(1, bus.total_seats + 1) %}
+
+                            {% set seat = number|string %}
+
+                            {% if seat in booked_seats %}
+
+                            <button
+                                type="button"
+                                class="seat booked"
+                                disabled
+                            >
+                                {{ number }}
+                            </button>
+
+                            {% else %}
+
+                            <button
+                                type="button"
+                                class="seat"
+                                onclick="selectSeat('{{ number }}')"
+                            >
+                                {{ number }}
+                            </button>
+
+                            {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="legend">
+
+                            <div class="legend-item">
+                                <span class="legend-box"></span>
+                                Available
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-box selected"></span>
+                                Selected
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-box booked"></span>
+                                Booked
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOOKING FORM -->
+
+                <div>
+
+                    <div class="section-title">
+                        Booking Details
+                    </div>
+
+
+                    <form
+                        method="post"
+                        action="/bookings/"
+                        class="booking-form"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="bus_id"
+                            value="{{ bus.id }}"
+                        >
+
+
+                        <input
+                            type="hidden"
+                            name="seat_number"
+                            id="seat_number"
+                        >
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Travel Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="travel_date"
+                                value="{{ travel_date }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="selected-display">
+
+                            Selected Seat:
+                            <span id="selected-seat-text">
+                                None
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="confirm-button"
+                            id="confirm-button"
+                            disabled
+                        >
+                            Confirm Booking
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="no-bus">
+
+            <h2>
+                Bus not found
+            </h2>
+
+            <p>
+                Please return to the search page and select a bus.
+            </p>
+
+            <a href="/search" class="back-link">
+                Search Buses
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+let selectedSeats = [];
+
+function selectSeat(number) {
+
+    const seatNumber = String(number);
+
+    const buttons = document.querySelectorAll(".seat:not(.booked)");
+
+    const selectedButton = Array.from(buttons).find(
+        button => button.textContent.trim() === seatNumber
+    );
+
+    if (!selectedButton) {
+        return;
+    }
+
+    // ---------------------------------------
+    // If already selected → remove it
+    // ---------------------------------------
+
+    if (selectedSeats.includes(seatNumber)) {
+
+        selectedSeats = selectedSeats.filter(
+            seat => seat !== seatNumber
+        );
+
+        selectedButton.classList.remove("selected");
+
+    }
+
+    // ---------------------------------------
+    // Otherwise → select it
+    // ---------------------------------------
+
+    else {
+
+        selectedSeats.push(seatNumber);
+
+        selectedButton.classList.add("selected");
+    }
+
+    // ---------------------------------------
+    // Update display
+    // ---------------------------------------
+
+    document.getElementById("selected-seat-text").textContent =
+        selectedSeats.length > 0
+            ? selectedSeats.join(", ")
+            : "None";
+
+    // ---------------------------------------
+    // Store seats in hidden input
+    // ---------------------------------------
+
+    document.getElementById("seat_number").value =
+        selectedSeats.join(",");
+
+    // ---------------------------------------
+    // Enable / disable booking button
+    // ---------------------------------------
+
+    document.getElementById("confirm-button").disabled =
+        selectedSeats.length === 0;
+}
+
+</script>
+
+{% endblock %}
