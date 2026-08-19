@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CloudDedupe — Duplicate Data Detection &amp; Elimination</title>
+    <meta
+      name="description"
+      content="Cloud-based validation pipeline that detects duplicates, blocks invalid entries and stores only verified unique records."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">◈</span>
+        <div>
+          <strong>CloudDedupe</strong>
+          <small>Data Integrity Pipeline</small>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="pill" id="health"><i class="dot"></i> Backend connected</span>
+        <button class="btn ghost" id="resetBtn">Reset database</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Stop duplicates <em>before</em> they reach the cloud.</h1>
+        <p>
+          Every uploaded record passes through validation, SHA-256 fingerprinting and fuzzy
+          match analysis. Only verified, unique data is written to the database.
+        </p>
+      </section>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="grid">
+        <div class="card">
+          <div class="card-head">
+            <h2>Ingest data</h2>
+            <div class="tabs">
+              <button class="tab active" data-tab="single">Single record</button>
+              <button class="tab" data-tab="bulk">Bulk upload</button>
+            </div>
+          </div>
+
+          <form id="singleForm" class="pane active">
+            <div class="row">
+              <label>Full name<input name="name" placeholder="Aarav Sharma" /></label>
+              <label>Email<input name="email" placeholder="aarav@company.com" /></label>
+            </div>
+            <div class="row">
+              <label>Phone<input name="phone" placeholder="+919876543210" /></label>
+              <label>Age<input name="age" type="number" placeholder="29" /></label>
+            </div>
+            <div class="row">
+              <label>City<input name="city" placeholder="Bengaluru" /></label>
+              <label>Department<input name="department" placeholder="Engineering" /></label>
+            </div>
+            <div class="actions">
+              <button type="button" class="btn ghost" id="checkBtn">Validate only</button>
+              <button type="submit" class="btn">Verify &amp; save</button>
+            </div>
+          </form>
+
+          <div id="bulkPane" class="pane">
+            <p class="hint">
+              Paste CSV (with a header row) or a JSON array, or drop a <code>.csv</code> /
+              <code>.json</code> file below.
+            </p>
+            <div id="drop" class="drop">
+              <input type="file" id="fileInput" accept=".csv,.json,.txt" hidden />
+              <span>Drop file here or <button type="button" id="browse">browse</button></span>
+            </div>
+            <textarea
+              id="bulkText"
+              spellcheck="false"
+              placeholder="name,email,phone,city,age,department&#10;Aarav Sharma,aarav@company.com,+919876543210,Bengaluru,29,Engineering"
+            ></textarea>
+            <div class="actions">
+              <button type="button" class="btn ghost" id="sampleBtn">Load sample data</button>
+              <button type="button" class="btn" id="bulkBtn">Run pipeline</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Pipeline report</h2>
+            <span class="muted" id="reportMeta">Awaiting input</span>
+          </div>
+          <div id="report" class="report empty">
+            <p>Results of the validation → deduplication → storage pipeline appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card wide">
+        <div class="card-head">
+          <h2>Cloud database <span class="count" id="recCount">0</span></h2>
+          <input id="search" class="search" placeholder="Search stored records…" />
+        </div>
+        <div class="table-wrap">
+          <table id="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Age</th>
+                <th>Department</th>
+                <th>Fingerprint</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card wide">
+        <div class="card-head"><h2>Rejection audit log</h2></div>
+        <ul class="logs" id="logs"></ul>
+      </section>
+    </main>
+
+    <footer>CloudDedupe · validation · deduplication · storage optimisation</footer>
+    <div id="toast" class="toast"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

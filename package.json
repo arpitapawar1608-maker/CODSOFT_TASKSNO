@@ -1,0 +1,19 @@
+{
+  "name": "cloud-dedupe",
+  "version": "1.0.0",
+  "description": "Cloud data duplication detection & elimination system",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1113.0",
+    "dotenv": "^17.4.2"
+  }
+}
