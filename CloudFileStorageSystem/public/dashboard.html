@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CloudVault | Dashboard</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body class="dashboard-page">
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="dashboard-header">
+
+    <div class="logo">
+        ☁ <span>CloudVault</span>
+    </div>
+
+    <nav class="dashboard-nav">
+
+        <a href="/dashboard">
+            🏠 Dashboard
+        </a>
+
+        <a href="#upload">
+            📤 Upload
+        </a>
+
+        <a href="#files">
+            📁 My Files
+        </a>
+
+        <a href="/" onclick="logout()">
+            🚪 Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<main class="dashboard-container">
+
+
+    <!-- ================= WELCOME ================= -->
+
+    <section class="welcome-banner">
+
+        <div class="welcome-content">
+
+            <div class="welcome-badge">
+                ✨ CLOUD STORAGE
+            </div>
+
+            <h1>
+                Welcome to
+                <span>CloudVault</span> 👋
+            </h1>
+
+            <p>
+                Your secure space to store, manage and access
+                your important files anytime, anywhere.
+            </p>
+
+            <div class="welcome-actions">
+
+                <a href="#upload"
+                   class="btn btn-primary">
+                    📤 Upload File
+                </a>
+
+                <a href="#files"
+                   class="btn btn-outline">
+                    📁 View Files
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="cloud-symbol">
+
+            <div class="cloud-glow"></div>
+
+            ☁
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <section class="stats-grid">
+
+
+        <!-- FILES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+                📁
+            </div>
+
+            <div class="stat-content">
+
+                <p>
+                    TOTAL FILES
+                </p>
+
+                <h2 id="totalFiles">
+                    0
+                </h2>
+
+                <span>
+                    Files stored
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STORAGE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                💾
+            </div>
+
+            <div class="stat-content">
+
+                <p>
+                    STORAGE USED
+                </p>
+
+                <h2 id="storageUsed">
+                    0 KB
+                </h2>
+
+                <span>
+                    Cloud storage
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STATUS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+                ✓
+            </div>
+
+            <div class="stat-content">
+
+                <p>
+                    SYSTEM STATUS
+                </p>
+
+                <h2>
+                    Active
+                </h2>
+
+                <span class="status-online">
+                    ● All systems operational
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================= UPLOAD ================= -->
+
+    <section
+        class="upload-section"
+        id="upload">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="small-title">
+                    FILE MANAGEMENT
+                </p>
+
+                <h2>
+                    Upload Your Files
+                </h2>
+
+                <p class="section-description">
+                    Securely upload your files to CloudVault.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- UPLOAD BOX -->
+
+        <div class="upload-box">
+
+
+            <div class="upload-decoration"></div>
+
+
+            <div class="upload-icon">
+                ☁
+            </div>
+
+
+            <h3>
+                Upload your file
+            </h3>
+
+
+            <p>
+                Select a file from your computer
+            </p>
+
+
+            <label
+                for="fileInput"
+                class="file-select">
+
+                📂 Choose File
+
+            </label>
+
+
+            <input
+                type="file"
+                id="fileInput"
+            >
+
+
+            <div
+                id="selectedFile"
+                class="selected-file">
+
+                No file selected
+
+            </div>
+
+
+            <button
+                id="uploadBtn"
+                class="upload-button">
+
+                🚀 Upload to Cloud
+
+            </button>
+
+
+            <small>
+                🔒 Your files are securely stored.
+            </small>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================= FILES ================= -->
+
+    <section
+        class="files-section"
+        id="files">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="small-title">
+                    YOUR STORAGE
+                </p>
+
+                <h2>
+                    My Files 📁
+                </h2>
+
+                <p class="section-description">
+                    Manage all your uploaded files.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div
+            id="fileList"
+            class="file-list">
+
+
+            <div class="empty-files">
+
+                <div class="empty-icon">
+                    ☁
+                </div>
+
+                <h3>
+                    No files uploaded yet
+                </h3>
+
+                <p>
+                    Upload your first file and it will appear here.
+                </p>
+
+                <a href="#upload"
+                   class="btn btn-primary">
+
+                    📤 Upload First File
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="logo">
+        ☁ CloudVault
+    </div>
+
+    <p>
+        Secure • Fast • Reliable
+    </p>
+
+    <p>
+        © 2026 Cloud File Storage System
+    </p>
+
+</footer>
+
+
+
+<script src="/dashboard.js"></script>
+
+<script src="/script.js"></script>
+
+</body>
+
+</html>
